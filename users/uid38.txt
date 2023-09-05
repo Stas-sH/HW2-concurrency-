@@ -1,0 +1,36 @@
+UID: 38; Email: user38@company.com;
+Activity Log:
+0. [logged in] at 2023-09-05T18:10:27+03:00
+1. [logged in] at 2023-09-05T18:10:27+03:00
+2. [logged in] at 2023-09-05T18:10:27+03:00
+3. [created record] at 2023-09-05T18:10:27+03:00
+4. [logged in] at 2023-09-05T18:10:27+03:00
+5. [created record] at 2023-09-05T18:10:27+03:00
+6. [created record] at 2023-09-05T18:10:27+03:00
+7. [logged in] at 2023-09-05T18:10:27+03:00
+8. [logged in] at 2023-09-05T18:10:27+03:00
+9. [logged out] at 2023-09-05T18:10:27+03:00
+10. [logged in] at 2023-09-05T18:10:27+03:00
+11. [logged out] at 2023-09-05T18:10:27+03:00
+12. [created record] at 2023-09-05T18:10:27+03:00
+13. [deleted record] at 2023-09-05T18:10:27+03:00
+14. [logged out] at 2023-09-05T18:10:27+03:00
+15. [deleted record] at 2023-09-05T18:10:27+03:00
+16. [created record] at 2023-09-05T18:10:27+03:00
+17. [deleted record] at 2023-09-05T18:10:27+03:00
+18. [created record] at 2023-09-05T18:10:27+03:00
+19. [logged in] at 2023-09-05T18:10:27+03:00
+20. [created record] at 2023-09-05T18:10:27+03:00
+21. [deleted record] at 2023-09-05T18:10:27+03:00
+22. [created record] at 2023-09-05T18:10:27+03:00
+23. [logged in] at 2023-09-05T18:10:27+03:00
+24. [created record] at 2023-09-05T18:10:27+03:00
+25. [created record] at 2023-09-05T18:10:27+03:00
+26. [logged in] at 2023-09-05T18:10:27+03:00
+27. [created record] at 2023-09-05T18:10:27+03:00
+28. [deleted record] at 2023-09-05T18:10:27+03:00
+29. [created record] at 2023-09-05T18:10:27+03:00
+30. [created record] at 2023-09-05T18:10:27+03:00
+31. [logged in] at 2023-09-05T18:10:27+03:00
+32. [logged in] at 2023-09-05T18:10:27+03:00
+33. [created record] at 2023-09-05T18:10:27+03:00

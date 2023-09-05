@@ -1,0 +1,210 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"math/rand"
+	"os"
+	"time"
+)
+
+var actions = []string{"logged in", "logged out", "created record", "deleted record", "updated account"}
+
+type logItem struct {
+	action    string
+	timestamp time.Time
+}
+
+type User struct {
+	id    int
+	email string
+	logs  []logItem
+}
+
+/*
+func (u User) getActivityInfo() string {
+	output := fmt.Sprintf("UID: %d; Email: %s;\nActivity Log:\n", u.id, u.email)
+	for index, item := range u.logs { //////////у юзера может біть дофига логов
+		output += fmt.Sprintf("%d. [%s] at %s\n", index, item.action, item.timestamp.Format(time.RFC3339))
+	}
+
+	return output
+}
+*/
+func (u User) getActivityInfo() string { /////////можно так не делать, существенной прибавки времени нет
+	output := fmt.Sprintf("UID: %d; Email: %s;\nActivity Log:\n", u.id, u.email)
+
+	tasksgetActivityInfo := make(chan logItem, len(u.logs))
+	nomberOfTaskGetActivityInfo := make(chan int, len(u.logs))
+	resultsGetActivityInfo := make(chan string, len(u.logs))
+
+	for i := 0; i < len(u.logs); i++ {
+		go WorkerForgetActivityInfo(tasksgetActivityInfo, nomberOfTaskGetActivityInfo, resultsGetActivityInfo)
+	}
+
+	for index, item := range u.logs {
+		tasksgetActivityInfo <- item
+		nomberOfTaskGetActivityInfo <- index
+	}
+	close(tasksgetActivityInfo)
+	close(nomberOfTaskGetActivityInfo)
+
+	for i := 0; i < len(u.logs); i++ {
+		output += fmt.Sprintf("%s\n", <-resultsGetActivityInfo)
+	}
+	return output
+}
+
+func WorkerForgetActivityInfo(tasksgetActivityInfo <-chan logItem, nomberOfTaskGetActivityInfo <-chan int, resultsGetActivityInfo chan<- string) { /////////можно так не делать, существенной прибавки времени нет
+	for item := range tasksgetActivityInfo {
+		for index := range nomberOfTaskGetActivityInfo {
+			resultsGetActivityInfo <- fmt.Sprintf("%d. [%s] at %s\n", index, item.action, item.timestamp.Format(time.RFC3339))
+		}
+	}
+
+}
+
+/*
+func saveUserInfo(user User) {
+	fmt.Printf("WRITING FILE FOR UID %d\n", user.id)
+
+	filename := fmt.Sprintf("users/uid%d.txt", user.id)
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	file.WriteString(user.getActivityInfo())
+	time.Sleep(time.Second)
+}
+*/
+func WorkerForSaveUserInfo(tasks <-chan User) {
+	for t := range tasks {
+		fmt.Printf("WRITING FILE FOR UID %d\n", t.id)
+
+		filename := fmt.Sprintf("users/uid%d.txt", t.id)
+		file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		file.WriteString(t.getActivityInfo())
+		time.Sleep(time.Second)
+	}
+}
+
+/*
+func generateUsers(count int) []User { ////сюда может прийти дохуя запросов на создание юзеров
+	users := make([]User, count) ////может біть огромній массив
+
+	for i := 0; i < count; i++ {
+		users[i] = User{
+			id:    i + 1,
+			email: fmt.Sprintf("user%d@company.com", i+1),
+			logs:  generateLogs(rand.Intn(1000)), ///может біть до 1000 логов
+		}
+		fmt.Printf("generated user %d\n", i+1) ///віполняеться 100 раз!!!!
+		time.Sleep(time.Millisecond * 100)
+	}
+	return users
+}*/
+func generateUsers(count int) []User { ////сюда может прийти дохуя запросов на создание юзеров
+	users := make([]User, count) ////может біть огромній массив
+	tasksGenerateUsers := make(chan int, count)
+	resultsGenerateUsers := make(chan User, count)
+
+	for i := 0; i < count; i++ {
+		go WorkerForgenerateUsers(tasksGenerateUsers, resultsGenerateUsers)
+	}
+
+	for i := 0; i < count; i++ {
+		tasksGenerateUsers <- i
+	}
+
+	close(tasksGenerateUsers)
+
+	for i := 0; i < count; i++ {
+		users = append(users, <-resultsGenerateUsers)
+	}
+
+	return users
+}
+
+func WorkerForgenerateUsers(tasksGenerateUsers <-chan int, resultsGenerateUsers chan<- User) {
+
+	/*for i:=0; i<countLogs;i++{
+		go WorkerForGenerateLogs(tasksGenerateLogs, resultGenerateLogs)
+	}*/
+
+	for j := range tasksGenerateUsers {
+		countLogs := (rand.Intn(1000))
+		tasksGenerateLogs := make(chan int)
+		resultGenerateLogs := make(chan []logItem)
+		go WorkerForGenerateLogs(tasksGenerateLogs, resultGenerateLogs)
+		tasksGenerateLogs <- countLogs
+		close(tasksGenerateLogs)
+		newUser := User{
+			id:    j + 1,
+			email: fmt.Sprintf("user%d@company.com", j+1),
+			logs:  <-resultGenerateLogs, //generateLogs(rand.Intn(1000)), ///может біть до 1000 логов
+		}
+		fmt.Printf("generated user %d\n", j+1) ///віполняеться 100 раз!!!!
+		time.Sleep(time.Millisecond * 100)
+
+		resultsGenerateUsers <- newUser
+	}
+
+}
+
+func WorkerForGenerateLogs(tasksGenerateLogs <-chan int, resultGenerateLogs chan<- []logItem) {
+
+	for j := range tasksGenerateLogs {
+		logs := make([]logItem, j)
+		for i := 0; i < j; i++ {
+			logs[i] = logItem{
+				action:    actions[rand.Intn(len(actions)-1)],
+				timestamp: time.Now(),
+			}
+		}
+		resultGenerateLogs <- logs
+	}
+}
+
+/*func generateLogs(count int) []logItem { //сюда может прийти до 1000 запросов на создание логов
+	logs := make([]logItem, count)
+
+	for i := 0; i < count; i++ {
+		logs[i] = logItem{
+			action:    actions[rand.Intn(len(actions)-1)],
+			timestamp: time.Now(),
+		}
+	}
+
+	return logs
+}
+*/
+
+/*
+func main() {
+	rand.Seed(time.Now().Unix())
+
+	startTime := time.Now()
+
+	countUsers := 100
+	users := generateUsers(countUsers)
+
+	tasks := make(chan User)
+
+	for i := 0; i < countUsers; i++ {
+		go WorkerForSaveUserInfo(tasks)
+	}
+
+	for _, user := range users {
+		tasks <- user
+		///saveUserInfo(user) ////////сохраняем дофига юзеров(100)
+	}
+	close(tasks)
+
+	fmt.Printf("DONE! Time Elapsed: %.2f seconds\n", time.Since(startTime).Seconds())
+}
+*/

@@ -1,0 +1,18 @@
+UID: 93; Email: user93@company.com;
+Activity Log:
+0. [deleted record] at 2023-09-05T18:10:27+03:00
+1. [deleted record] at 2023-09-05T18:10:27+03:00
+2. [deleted record] at 2023-09-05T18:10:27+03:00
+3. [created record] at 2023-09-05T18:10:27+03:00
+4. [logged in] at 2023-09-05T18:10:27+03:00
+5. [created record] at 2023-09-05T18:10:27+03:00
+6. [logged out] at 2023-09-05T18:10:27+03:00
+7. [deleted record] at 2023-09-05T18:10:27+03:00
+8. [created record] at 2023-09-05T18:10:27+03:00
+9. [logged in] at 2023-09-05T18:10:27+03:00
+10. [created record] at 2023-09-05T18:10:27+03:00
+11. [logged in] at 2023-09-05T18:10:27+03:00
+12. [deleted record] at 2023-09-05T18:10:27+03:00
+13. [logged out] at 2023-09-05T18:10:27+03:00
+14. [deleted record] at 2023-09-05T18:10:27+03:00
+15. [logged in] at 2023-09-05T18:10:27+03:00
