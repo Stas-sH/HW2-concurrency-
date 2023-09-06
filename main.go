@@ -64,6 +64,26 @@ func main() {
 
 	users := generateUsers(countUsers)
 
+	saveAllUsersInfo(users)
+	/*
+		tasks := make(chan User, countUsers)
+		wg := new(sync.WaitGroup)
+
+		for i := 0; i < countUsers; i++ {
+			wg.Add(1)
+			go WorkerForSaveUserInfo(tasks, wg)
+		}
+		for i := 0; i < countUsers; i++ {
+			tasks <- users[i]
+		}
+		wg.Wait()
+		close(tasks)*/
+	fmt.Printf("DONE! Time Elapsed: %.2f seconds\n", time.Since(startTime).Seconds())
+	fmt.Println("Len(users) - ", len(users))
+
+}
+
+func saveAllUsersInfo(users []User) {
 	tasks := make(chan User, countUsers)
 	wg := new(sync.WaitGroup)
 
@@ -76,9 +96,6 @@ func main() {
 	}
 	wg.Wait()
 	close(tasks)
-	fmt.Printf("DONE! Time Elapsed: %.2f seconds\n", time.Since(startTime).Seconds())
-	fmt.Println("Len(users) - ", len(users))
-
 }
 
 func WorkerForSaveUserInfo(tasks <-chan User, wg *sync.WaitGroup) {
